@@ -103,6 +103,20 @@
 				<Definition>Bits: DATA DATA 0 0 0 0 0 0 Function: LSB of Temp</Definition>
 			</Register>
 		</Registers>
+    <Commands>
+      <Command>
+        <Definition>Reset Second</Definition>
+        <Data>Reg:00#Length:1#Data:00#Type:Hex</Data>
+      </Command>
+      <Command>
+        <Definition>Reset Minute</Definition>
+        <Data>Reg:01#Length:1#Data:00#Type:Ascii</Data>
+      </Command>
+      <Command>
+        <Definition>Reset Hour</Definition>
+        <Data>Reg:02#Length:1#Data:00#Type:Hex</Data>
+      </Command>
+    </Commands>
 	</Device>
 	<Device DeviceId="0002">
 		<Name>DS1307 Realtime Clock</Name>
@@ -207,5 +221,55 @@
 				<Definition>Bits: DATA DATA 0 0 0 0 0 0 Function: LSB of Temp</Definition>
 			</Register>
 		</Registers>
+    <Commands>
+      <Command>
+        <Definition>Reset Second1</Definition>
+        <Data>Reg:00#Length:1#Data:00#Type:Hex</Data>
+      </Command>
+      <Command>
+        <Definition>Reset Minute1</Definition>
+        <Data>Reg:01#Length:1#Data:00#Type:Ascii</Data>
+      </Command>
+      <Command>
+        <Definition>Reset Hour1</Definition>
+        <Data>Reg:02#Length:1#Data:00#Type:Hex</Data>
+      </Command>
+      <Command>
+        <Definition>Reset Second1</Definition>
+        <Data>Reg:00#Length:1#Data:00#Type:Hex</Data>
+      </Command>
+      <Command>
+        <Definition>Reset Minute1</Definition>
+        <Data>Reg:01#Length:1#Data:00#Type:Ascii</Data>
+      </Command>
+      <Command>
+        <Definition>Reset Hour1</Definition>
+        <Data>Reg:02#Length:1#Data:00#Type:Hex</Data>
+      </Command>
+      <Command>
+        <Definition>Reset Second1</Definition>
+        <Data>Reg:00#Length:1#Data:00#Type:Hex</Data>
+      </Command>
+      <Command>
+        <Definition>Reset Minute1</Definition>
+        <Data>Reg:01#Length:1#Data:00#Type:Ascii</Data>
+      </Command>
+      <Command>
+        <Definition>Reset Hour1</Definition>
+        <Data>Reg:02#Length:1#Data:00#Type:Hex</Data>
+      </Command>
+      <Command>
+        <Definition>Reset Second1</Definition>
+        <Data>Reg:00#Length:1#Data:00#Type:Hex</Data>
+      </Command>
+      <Command>
+        <Definition>Reset Minute1</Definition>
+        <Data>Reg:01#Length:1#Data:00#Type:Ascii</Data>
+      </Command>
+      <Command>
+        <Definition>Reset Hour1</Definition>
+        <Data>Reg:02#Length:1#Data:00#Type:Hex</Data>
+      </Command>
+    </Commands>
 	</Device>
 </Devices>

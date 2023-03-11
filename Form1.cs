@@ -293,11 +293,23 @@ namespace TestI2C
 
 
 
-        private void label3_Click(object sender, EventArgs e)
+        private void tempLbl_Click(object sender, EventArgs e)
         {
-            cmbReg.SelectedIndex=10;
-            txtData.Text = "00 AA";
-            cmbType.SelectedIndex=0;
+            System.Windows.Forms.Label lblSender = (System.Windows.Forms.Label)sender;
+            var lblDatas = lblSender.Tag.ToString().Split('#');
+            foreach(var lblData in lblDatas)
+            {
+                var lblDatalParts = lblData.Split(':');
+                switch (lblDatalParts[0])
+                {
+                    case "Reg": cmbReg.Text = lblDatalParts[1];break;
+                    case "Length": numericUpDown1.Value = Convert.ToDecimal(lblDatalParts[1]); break;
+                    case "Data": txtData.Text = lblDatalParts[1]; break;
+                    case "Type": cmbType.Text = lblDatalParts[1]; break;
+                }
+            }
+            //cmbReg.SelectedIndex=10;
+
             /*
             textBox2.Text = label3.Text;  // Ausgabe "1234" auf 4 * 7 Seg
             WriteBuf[0] = Convert.ToByte("70", 16);
@@ -519,6 +531,39 @@ namespace TestI2C
                 deviceInfo = selectedDevice.FirstOrDefault();
                 textBox1.Text = deviceInfo.Element("Info").Value;
                 cmbDeviceAdr.Text = deviceInfo.Element("Adresses").Elements("Adress").FirstOrDefault().Value;
+                int lblTop = 0;
+                try
+                {
+                    IEnumerable<XElement> listCommands =
+                            from elc in deviceInfo.Element("Commands").Elements("Command")
+                                //where (string) elc.Element("Info").Value == itemValues[1]
+                            select elc;
+                    foreach (Control lblEx in panel1.Controls.Find("lblCommands",true))
+                    {
+                        panel1.Controls.Remove(lblEx);
+                    }
+                    foreach (XElement XElementcmd in listCommands)
+                    {
+                        System.Windows.Forms.Label tempLbl = new System.Windows.Forms.Label();
+                        panel1.Controls.Add(tempLbl);
+                        tempLbl.AutoSize = true;
+                        tempLbl.Cursor = System.Windows.Forms.Cursors.Hand;
+                        tempLbl.Location = new System.Drawing.Point(15, lblTop);
+                        tempLbl.Name = "lblCommands";
+                        tempLbl.Size = new System.Drawing.Size(210, 13);
+                        tempLbl.TabIndex = 20;
+                        tempLbl.Text = XElementcmd.Element("Definition").Value;
+                        tempLbl.Tag = XElementcmd.Element("Data").Value;
+                        tempLbl.Click += new System.EventHandler(tempLbl_Click);
+                        tempLbl.MouseEnter += new System.EventHandler(Label_MouseEnter);
+                        tempLbl.MouseLeave += new System.EventHandler(Label_MouseLeave);
+                        tempLbl.Visible = true;
+                        lblTop += 16;
+                    }
+                }
+                catch { }
+
+
             } else
                 deviceInfo= null;
         }

@@ -36,6 +36,9 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.cmbDevices = new System.Windows.Forms.ComboBox();
+            this.btnLoadXml = new System.Windows.Forms.Button();
             this.btnScanAdresses = new System.Windows.Forms.Button();
             this.rB750k = new System.Windows.Forms.RadioButton();
             this.rB400k = new System.Windows.Forms.RadioButton();
@@ -76,9 +79,7 @@
             this.buttonClear = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.btnLoadXml = new System.Windows.Forms.Button();
-            this.cmbDevices = new System.Windows.Forms.ComboBox();
-            this.label12 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.statusStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -165,6 +166,38 @@
             this.groupBox1.TabIndex = 16;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Connect USB- Chip CH341A";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.label12.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.label12.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.label12.Location = new System.Drawing.Point(114, 122);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(224, 13);
+            this.label12.TabIndex = 49;
+            this.label12.Text = "No device Loaded yet. Please Load Xml Files!";
+            // 
+            // cmbDevices
+            // 
+            this.cmbDevices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDevices.FormattingEnabled = true;
+            this.cmbDevices.Location = new System.Drawing.Point(110, 118);
+            this.cmbDevices.Name = "cmbDevices";
+            this.cmbDevices.Size = new System.Drawing.Size(245, 21);
+            this.cmbDevices.TabIndex = 48;
+            this.cmbDevices.SelectedIndexChanged += new System.EventHandler(this.cmbDevices_SelectedIndexChanged);
+            // 
+            // btnLoadXml
+            // 
+            this.btnLoadXml.Location = new System.Drawing.Point(10, 112);
+            this.btnLoadXml.Name = "btnLoadXml";
+            this.btnLoadXml.Size = new System.Drawing.Size(92, 27);
+            this.btnLoadXml.TabIndex = 47;
+            this.btnLoadXml.Text = "Load Xml Files";
+            this.btnLoadXml.UseVisualStyleBackColor = true;
+            this.btnLoadXml.Click += new System.EventHandler(this.btnLoadXml_Click);
             // 
             // btnScanAdresses
             // 
@@ -368,6 +401,7 @@
             // groupBox3
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.panel1);
             this.groupBox3.Controls.Add(this.cmdReadRegister);
             this.groupBox3.Controls.Add(this.lblDelay);
             this.groupBox3.Controls.Add(this.label11);
@@ -537,6 +571,7 @@
             this.label6.Size = new System.Drawing.Size(187, 13);
             this.label6.TabIndex = 23;
             this.label6.Text = "S91 02 Read out Temp Sensor 2 Byte";
+            this.label6.Visible = false;
             this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
             // label5
@@ -547,6 +582,7 @@
             this.label5.Size = new System.Drawing.Size(191, 13);
             this.label5.TabIndex = 22;
             this.label5.Text = "S90 00 Temp Sensor Pointer back to 0";
+            this.label5.Visible = false;
             this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // label4
@@ -557,6 +593,7 @@
             this.label4.Size = new System.Drawing.Size(142, 13);
             this.label4.TabIndex = 21;
             this.label4.Text = "S90 01 60 Init Temp- Sensor";
+            this.label4.Visible = false;
             this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // label3
@@ -568,7 +605,8 @@
             this.label3.Size = new System.Drawing.Size(210, 13);
             this.label3.TabIndex = 20;
             this.label3.Text = "S700047 06 5b 4f 66 to ELV- 7Seg \"1234\"";
-            this.label3.Click += new System.EventHandler(this.label3_Click);
+            this.label3.Visible = false;
+            this.label3.Click += new System.EventHandler(this.tempLbl_Click);
             this.label3.MouseEnter += new System.EventHandler(this.Label_MouseEnter);
             this.label3.MouseLeave += new System.EventHandler(this.Label_MouseLeave);
             // 
@@ -591,37 +629,13 @@
             this.timer2.Interval = 1000;
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
-            // btnLoadXml
+            // panel1
             // 
-            this.btnLoadXml.Location = new System.Drawing.Point(10, 112);
-            this.btnLoadXml.Name = "btnLoadXml";
-            this.btnLoadXml.Size = new System.Drawing.Size(92, 27);
-            this.btnLoadXml.TabIndex = 47;
-            this.btnLoadXml.Text = "Load Xml Files";
-            this.btnLoadXml.UseVisualStyleBackColor = true;
-            this.btnLoadXml.Click += new System.EventHandler(this.btnLoadXml_Click);
-            // 
-            // cmbDevices
-            // 
-            this.cmbDevices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbDevices.FormattingEnabled = true;
-            this.cmbDevices.Location = new System.Drawing.Point(110, 118);
-            this.cmbDevices.Name = "cmbDevices";
-            this.cmbDevices.Size = new System.Drawing.Size(245, 21);
-            this.cmbDevices.TabIndex = 48;
-            this.cmbDevices.SelectedIndexChanged += new System.EventHandler(this.cmbDevices_SelectedIndexChanged);
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.label12.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.label12.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.label12.Location = new System.Drawing.Point(114, 122);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(224, 13);
-            this.label12.TabIndex = 49;
-            this.label12.Text = "No device Loaded yet. Please Load Xml Files!";
+            this.panel1.AutoScroll = true;
+            this.panel1.Location = new System.Drawing.Point(18, 151);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(332, 114);
+            this.panel1.TabIndex = 50;
             // 
             // Form1
             // 
@@ -701,6 +715,7 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.ComboBox cmbDevices;
         private System.Windows.Forms.Button btnLoadXml;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 
