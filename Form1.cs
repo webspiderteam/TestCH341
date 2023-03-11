@@ -67,7 +67,7 @@ namespace TestI2C
         private Dictionary<string, byte[]> ScanAllAdresses()
         {
             Dictionary<string, byte[]> result = new Dictionary<string, byte[]>();
-            int bufLenght = 256;
+            int bufLength = 256;
             dataGridView1.Rows.Clear();
             for (int i = 0; i < 128; i++)
             {
@@ -75,8 +75,8 @@ namespace TestI2C
                 WriteBuf[0] = (Convert.ToByte(i << 1));
                 WriteBuf[1] = Convert.ToByte("00", 16);
 
-                byte[] buf = new byte[bufLenght];
-                CH341StreamI2C(0, 2, ref WriteBuf[0], bufLenght, ref buf[0]);
+                byte[] buf = new byte[bufLength];
+                CH341StreamI2C(0, 2, ref WriteBuf[0], bufLength, ref buf[0]);
                 result.Add(i.ToString("X2"), buf);
             }
             return result;
@@ -84,19 +84,19 @@ namespace TestI2C
 
         private byte[] ReadOneRegister(string devAdress, string regAdress, int readLen)
         {
-            int bufLenght = readLen;
-            byte[] buf = new byte[bufLenght];
+            int bufLength = readLen;
+            byte[] buf = new byte[bufLength];
             int addresbyte = Convert.ToInt32(devAdress, 16) << 1;
             WriteBuf[0] = (Convert.ToByte(addresbyte));
             WriteBuf[1] = Convert.ToByte(regAdress, 16);
-            CH341StreamI2C(0, 2, ref WriteBuf[0], bufLenght, ref buf[0]);
+            CH341StreamI2C(0, 2, ref WriteBuf[0], bufLength, ref buf[0]);
             return buf; 
         }
 
         private Dictionary<string, byte[]> ReadAllRegister(string devAdress)
         {
             Dictionary<string, byte[]> result = new Dictionary<string, byte[]>();
-            int bufLenght = 1;
+            int bufLength = 1;
             int addresbyte = Convert.ToInt32(devAdress, 16) << 1;
             WriteBuf[0] = (Convert.ToByte(addresbyte ));
             dataGridView1.Rows.Clear();
@@ -113,23 +113,23 @@ namespace TestI2C
                     if (nameByValue.Count() > 0)
                     {
                         regDefinition = nameByValue.FirstOrDefault().Element("Definition").Value;
-                        bufLenght = Convert.ToInt16(nameByValue.FirstOrDefault().Element("Length").Value);
+                        bufLength = Convert.ToInt16(nameByValue.FirstOrDefault().Element("Length").Value);
                     }
                         
                 }
-                byte[] buf = new byte[bufLenght];
-                CH341StreamI2C(0, 2, ref WriteBuf[0], bufLenght, ref buf[0]);
+                byte[] buf = new byte[bufLength];
+                CH341StreamI2C(0, 2, ref WriteBuf[0], bufLength, ref buf[0]);
                 string[] row = new string[] { i.ToString("X2"), regDefinition ,ByteArrayToString(buf) };
                 dataGridView1.Rows.Add(row);
                 result.Add(i.ToString("X2"), buf);
-                bufLenght = 1;
+                bufLength = 1;
             }
             return result;
         }
 
         private void writeRegister(string devAdress, string regAdress, string outData)
         {
-            int bufLenght = 0;
+            int bufLength = 0;
             string sData = outData;
             byte[] buf = new byte[1];
             int addresbyte = Convert.ToInt32(devAdress, 16) << 1;
@@ -139,9 +139,9 @@ namespace TestI2C
             for (int i = 0; i<sData.Length; i=i+2)
             {
                 WriteBuf[(i/2)+2] = Convert.ToByte(sData.Substring(i,2), 16);
-                bufLenght++;
+                bufLength++;
             }
-            CH341StreamI2C(0, bufLenght + 2, ref WriteBuf[0], bufLenght, ref buf[0]);
+            CH341StreamI2C(0, bufLength + 2, ref WriteBuf[0], bufLength, ref buf[0]);
         }
 
         public static string ByteArrayToString(byte[] ba)
