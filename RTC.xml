@@ -1,0 +1,211 @@
+<?xml version="1.0"?>
+<Devices>
+	<Device DeviceId="0001">
+		<Name>DS3231 Realtime Clock</Name>
+		<Info>DS3231 Realtime Clock IC/Module I2C Communication protocol. Default Device Adress is x68.</Info>
+		<Adresses>
+			<Adress>68</Adress>
+		</Adresses>
+		<Registers>
+			<Register>
+				<RegAdress>00</RegAdress>
+				<Length>1</Length>
+				<Definition>Seconds</Definition>
+			</Register>
+			<Register>
+				<RegAdress>01</RegAdress>
+				<Length>1</Length>
+				<Definition>Minutes</Definition>
+			</Register>
+			<Register>
+				<RegAdress>02</RegAdress>
+				<Length>1</Length>
+				<Definition>Hours</Definition>
+			</Register>
+			<Register>
+				<RegAdress>03</RegAdress>
+				<Length>1</Length>
+				<Definition>Day of week</Definition>
+			</Register>
+			<Register>
+				<RegAdress>04</RegAdress>
+				<Length>1</Length>
+				<Definition>Day</Definition>
+			</Register>
+			<Register>
+				<RegAdress>05</RegAdress>
+				<Length>1</Length>
+				<Definition>Mounth</Definition>
+			</Register>
+			<Register>
+				<RegAdress>06</RegAdress>
+				<Length>1</Length>
+				<Definition>Year</Definition>
+			</Register>
+			<Register>
+				<RegAdress>07</RegAdress>
+				<Length>1</Length>
+				<Definition>Alarm1 Seconds</Definition>
+			</Register>
+			<Register>
+				<RegAdress>08</RegAdress>
+				<Length>1</Length>
+				<Definition>Alarm1 Minutes</Definition>
+			</Register>
+			<Register>
+				<RegAdress>09</RegAdress>
+				<Length>1</Length>
+				<Definition>Alarm1 Hours</Definition>
+			</Register>
+			<Register>
+				<RegAdress>0A</RegAdress>
+				<Length>1</Length>
+				<Definition>Alarm1 Day of week or Date (Depends to Bit6)</Definition>
+			</Register>	
+			<Register>
+				<RegAdress>0B</RegAdress>
+				<Length>1</Length>
+				<Definition>Alarm2 Minutes</Definition>
+			</Register>
+			<Register>
+				<RegAdress>0C</RegAdress>
+				<Length>1</Length>
+				<Definition>Alarm2 Hours</Definition>
+			</Register>
+			<Register>
+				<RegAdress>0D</RegAdress>
+				<Length>1</Length>
+				<Definition>Alarm2 Day of week or Date (Depends to Bit6)</Definition>
+			</Register>
+			<Register>
+				<RegAdress>0E</RegAdress>
+				<Length>1</Length>
+				<Definition>Bits: EOSC BBSQW CONV RS2 RS1 INTCN A2IE A1IE Function: Control</Definition>
+			</Register>
+			<Register>
+				<RegAdress>0F</RegAdress>
+				<Length>1</Length>
+				<Definition>Bits: OSF 0 0 0 EN32kHz BSY A2F A1F Function: Control/Status</Definition>
+			</Register>
+			<Register>
+				<RegAdress>10</RegAdress>
+				<Length>1</Length>
+				<Definition>Bits: SIGN DATA DATA DATA DATA DATA DATA DATA Function: Aging Offset</Definition>
+			</Register>
+			<Register>
+				<RegAdress>11</RegAdress>
+				<Length>1</Length>
+				<Definition>Bits: SIGN DATA DATA DATA DATA DATA DATA DATA Function: MSB of Temp</Definition>
+			</Register>
+			<Register>
+				<RegAdress>12</RegAdress>
+				<Length>1</Length>
+				<Definition>Bits: DATA DATA 0 0 0 0 0 0 Function: LSB of Temp</Definition>
+			</Register>
+		</Registers>
+	</Device>
+	<Device DeviceId="0002">
+		<Name>DS1307 Realtime Clock</Name>
+		<Info>DS1307 Realtime Clock IC/Module I2C Communication protocol. Default Device Adress is x68.</Info>
+		<Adresses>
+			<Adress>68</Adress>
+		</Adresses>
+		<Registers>
+			<Register>
+				<RegAdress>00</RegAdress>
+				<Length>1</Length>
+				<Definition>Seconds</Definition>
+			</Register>
+			<Register>
+				<RegAdress>01</RegAdress>
+				<Length>1</Length>
+				<Definition>Minutes</Definition>
+			</Register>
+			<Register>
+				<RegAdress>02</RegAdress>
+				<Length>1</Length>
+				<Definition>Hours</Definition>
+			</Register>
+			<Register>
+				<RegAdress>03</RegAdress>
+				<Length>1</Length>
+				<Definition>Day of week</Definition>
+			</Register>
+			<Register>
+				<RegAdress>04</RegAdress>
+				<Length>1</Length>
+				<Definition>Day</Definition>
+			</Register>
+			<Register>
+				<RegAdress>05</RegAdress>
+				<Length>1</Length>
+				<Definition>Mounth</Definition>
+			</Register>
+			<Register>
+				<RegAdress>06</RegAdress>
+				<Length>1</Length>
+				<Definition>Year</Definition>
+			</Register>
+			<Register>
+				<RegAdress>07</RegAdress>
+				<Length>1</Length>
+				<Definition>Alarm1 Seconds</Definition>
+			</Register>
+			<Register>
+				<RegAdress>08</RegAdress>
+				<Length>1</Length>
+				<Definition>Alarm1 Minutes</Definition>
+			</Register>
+			<Register>
+				<RegAdress>09</RegAdress>
+				<Length>1</Length>
+				<Definition>Alarm1 Hours</Definition>
+			</Register>
+			<Register>
+				<RegAdress>0A</RegAdress>
+				<Length>1</Length>
+				<Definition>Alarm1 Day of week or Date (Depends to Bit6)</Definition>
+			</Register>	
+			<Register>
+				<RegAdress>0B</RegAdress>
+				<Length>1</Length>
+				<Definition>Alarm2 Minutes</Definition>
+			</Register>
+			<Register>
+				<RegAdress>0C</RegAdress>
+				<Length>1</Length>
+				<Definition>Alarm2 Hours</Definition>
+			</Register>
+			<Register>
+				<RegAdress>0D</RegAdress>
+				<Length>1</Length>
+				<Definition>Alarm2 Day of week or Date (Depends to Bit6)</Definition>
+			</Register>
+			<Register>
+				<RegAdress>0E</RegAdress>
+				<Length>1</Length>
+				<Definition>Bits: EOSC BBSQW CONV RS2 RS1 INTCN A2IE A1IE Function: Control</Definition>
+			</Register>
+			<Register>
+				<RegAdress>0F</RegAdress>
+				<Length>1</Length>
+				<Definition>Bits: OSF 0 0 0 EN32kHz BSY A2F A1F Function: Control/Status</Definition>
+			</Register>
+			<Register>
+				<RegAdress>10</RegAdress>
+				<Length>1</Length>
+				<Definition>Bits: SIGN DATA DATA DATA DATA DATA DATA DATA Function: Aging Offset</Definition>
+			</Register>
+			<Register>
+				<RegAdress>11</RegAdress>
+				<Length>1</Length>
+				<Definition>Bits: SIGN DATA DATA DATA DATA DATA DATA DATA Function: MSB of Temp</Definition>
+			</Register>
+			<Register>
+				<RegAdress>12</RegAdress>
+				<Length>1</Length>
+				<Definition>Bits: DATA DATA 0 0 0 0 0 0 Function: LSB of Temp</Definition>
+			</Register>
+		</Registers>
+	</Device>
+</Devices>
