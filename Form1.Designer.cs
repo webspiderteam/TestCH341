@@ -33,7 +33,6 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.textBox2 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label12 = new System.Windows.Forms.Label();
@@ -59,6 +58,7 @@
             this.Dec = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Binary = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.cmdReadRegister = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
@@ -72,14 +72,9 @@
             this.txtData = new System.Windows.Forms.TextBox();
             this.cmbReg = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.buttonClear = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.statusStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -124,16 +119,6 @@
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(18, 97);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox2.Size = new System.Drawing.Size(333, 20);
-            this.textBox2.TabIndex = 14;
-            this.textBox2.Text = "S700047 06 5b 4f 66";
-            this.textBox2.Visible = false;
             // 
             // label2
             // 
@@ -290,19 +275,12 @@
             // 
             this.cmbDelay.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbDelay.FormattingEnabled = true;
-            this.cmbDelay.Items.AddRange(new object[] {
-            "100 ms",
-            "200 ms",
-            "500 ms",
-            "1 s",
-            "2 s",
-            "3 s",
-            "5 s"});
-            this.cmbDelay.Location = new System.Drawing.Point(281, 31);
+            this.cmbDelay.Location = new System.Drawing.Point(281, 24);
             this.cmbDelay.Name = "cmbDelay";
             this.cmbDelay.Size = new System.Drawing.Size(69, 21);
             this.cmbDelay.TabIndex = 43;
             this.cmbDelay.Visible = false;
+            this.cmbDelay.SelectedIndexChanged += new System.EventHandler(this.cmbDelay_SelectedIndexChanged);
             // 
             // cmbMode
             // 
@@ -420,12 +398,7 @@
             this.groupBox3.Controls.Add(this.butInitTempADC);
             this.groupBox3.Controls.Add(this.cmbReg);
             this.groupBox3.Controls.Add(this.label10);
-            this.groupBox3.Controls.Add(this.label6);
-            this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Controls.Add(this.label4);
-            this.groupBox3.Controls.Add(this.label3);
             this.groupBox3.Controls.Add(this.buttonClear);
-            this.groupBox3.Controls.Add(this.textBox2);
             this.groupBox3.Enabled = false;
             this.groupBox3.Location = new System.Drawing.Point(379, 12);
             this.groupBox3.Name = "groupBox3";
@@ -433,6 +406,14 @@
             this.groupBox3.TabIndex = 18;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Send Box";
+            // 
+            // panel1
+            // 
+            this.panel1.AutoScroll = true;
+            this.panel1.Location = new System.Drawing.Point(12, 151);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(332, 114);
+            this.panel1.TabIndex = 50;
             // 
             // cmdReadRegister
             // 
@@ -477,6 +458,7 @@
             this.cmbDeviceAdr.Name = "cmbDeviceAdr";
             this.cmbDeviceAdr.Size = new System.Drawing.Size(54, 21);
             this.cmbDeviceAdr.TabIndex = 46;
+            this.cmbDeviceAdr.SelectedIndexChanged += new System.EventHandler(this.cmbDeviceAdr_SelectedIndexChanged);
             // 
             // label9
             // 
@@ -522,6 +504,7 @@
             this.cmdSend.TabIndex = 42;
             this.cmdSend.Text = "Send";
             this.cmdSend.UseVisualStyleBackColor = true;
+            this.cmdSend.Click += new System.EventHandler(this.cmdSend_Click);
             // 
             // cmbType
             // 
@@ -563,53 +546,6 @@
             this.label10.TabIndex = 38;
             this.label10.Text = "Test Commands (Click to Use)";
             // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(15, 210);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(187, 13);
-            this.label6.TabIndex = 23;
-            this.label6.Text = "S91 02 Read out Temp Sensor 2 Byte";
-            this.label6.Visible = false;
-            this.label6.Click += new System.EventHandler(this.label6_Click);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(15, 196);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(191, 13);
-            this.label5.TabIndex = 22;
-            this.label5.Text = "S90 00 Temp Sensor Pointer back to 0";
-            this.label5.Visible = false;
-            this.label5.Click += new System.EventHandler(this.label5_Click);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(15, 183);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(142, 13);
-            this.label4.TabIndex = 21;
-            this.label4.Text = "S90 01 60 Init Temp- Sensor";
-            this.label4.Visible = false;
-            this.label4.Click += new System.EventHandler(this.label4_Click);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.label3.Location = new System.Drawing.Point(15, 156);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(210, 13);
-            this.label3.TabIndex = 20;
-            this.label3.Text = "S700047 06 5b 4f 66 to ELV- 7Seg \"1234\"";
-            this.label3.Visible = false;
-            this.label3.Click += new System.EventHandler(this.tempLbl_Click);
-            this.label3.MouseEnter += new System.EventHandler(this.Label_MouseEnter);
-            this.label3.MouseLeave += new System.EventHandler(this.Label_MouseLeave);
-            // 
             // buttonClear
             // 
             this.buttonClear.Location = new System.Drawing.Point(216, 97);
@@ -624,18 +560,9 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // timer2
+            // timer1
             // 
-            this.timer2.Interval = 1000;
-            this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
-            // 
-            // panel1
-            // 
-            this.panel1.AutoScroll = true;
-            this.panel1.Location = new System.Drawing.Point(18, 151);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(332, 114);
-            this.panel1.TabIndex = 50;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // Form1
             // 
@@ -669,7 +596,6 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-        private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -677,11 +603,6 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button buttonClose;
         private System.Windows.Forms.Button buttonClear;
-        private System.Windows.Forms.Timer timer2;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button butInitTempADC;
         private System.Windows.Forms.RadioButton rB750k;
         private System.Windows.Forms.RadioButton rB400k;
@@ -716,6 +637,7 @@
         private System.Windows.Forms.ComboBox cmbDevices;
         private System.Windows.Forms.Button btnLoadXml;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

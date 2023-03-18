@@ -110,11 +110,15 @@
       </Command>
       <Command>
         <Definition>Reset Minute</Definition>
-        <Data>Reg:01#Length:1#Data:00#Type:Ascii</Data>
+        <Data>Reg:01#Length:1#Data:00#Type:Hex</Data>
       </Command>
       <Command>
         <Definition>Reset Hour</Definition>
         <Data>Reg:02#Length:1#Data:00#Type:Hex</Data>
+      </Command>
+      <Command>
+        <Definition>Reset RTC Module</Definition>
+        <Data>Reg:0E#Length:1#Data:1C#Type:Hex</Data>
       </Command>
     </Commands>
 	</Device>
@@ -223,52 +227,20 @@
 		</Registers>
     <Commands>
       <Command>
-        <Definition>Reset Second1</Definition>
+        <Definition>Reset Second</Definition>
         <Data>Reg:00#Length:1#Data:00#Type:Hex</Data>
       </Command>
       <Command>
-        <Definition>Reset Minute1</Definition>
-        <Data>Reg:01#Length:1#Data:00#Type:Ascii</Data>
+        <Definition>Reset Minute</Definition>
+        <Data>Reg:01#Length:1#Data:00#Type:Hex</Data>
       </Command>
       <Command>
-        <Definition>Reset Hour1</Definition>
+        <Definition>Reset Hour</Definition>
         <Data>Reg:02#Length:1#Data:00#Type:Hex</Data>
       </Command>
       <Command>
-        <Definition>Reset Second1</Definition>
-        <Data>Reg:00#Length:1#Data:00#Type:Hex</Data>
-      </Command>
-      <Command>
-        <Definition>Reset Minute1</Definition>
-        <Data>Reg:01#Length:1#Data:00#Type:Ascii</Data>
-      </Command>
-      <Command>
-        <Definition>Reset Hour1</Definition>
-        <Data>Reg:02#Length:1#Data:00#Type:Hex</Data>
-      </Command>
-      <Command>
-        <Definition>Reset Second1</Definition>
-        <Data>Reg:00#Length:1#Data:00#Type:Hex</Data>
-      </Command>
-      <Command>
-        <Definition>Reset Minute1</Definition>
-        <Data>Reg:01#Length:1#Data:00#Type:Ascii</Data>
-      </Command>
-      <Command>
-        <Definition>Reset Hour1</Definition>
-        <Data>Reg:02#Length:1#Data:00#Type:Hex</Data>
-      </Command>
-      <Command>
-        <Definition>Reset Second1</Definition>
-        <Data>Reg:00#Length:1#Data:00#Type:Hex</Data>
-      </Command>
-      <Command>
-        <Definition>Reset Minute1</Definition>
-        <Data>Reg:01#Length:1#Data:00#Type:Ascii</Data>
-      </Command>
-      <Command>
-        <Definition>Reset Hour1</Definition>
-        <Data>Reg:02#Length:1#Data:00#Type:Hex</Data>
+        <Definition>Reset RTC Module</Definition>
+        <Data>Reg:0E#Length:1#Data:1C#Type:Hex</Data>
       </Command>
     </Commands>
 	</Device>

@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.IO.Ports;
 using System.IO;
-using MPS;
 using System.Runtime.InteropServices;
-using System.Reflection.Emit;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Xml.Linq;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace TestI2C
 {
@@ -22,13 +16,8 @@ namespace TestI2C
         public Form1()
         {
             InitializeComponent();
-            mmtimer = new TMultimediaTimer(null);
-            mmtimer.Interval = 100;
-            mmtimer.OnTimer = mmtimerTick;
-            
         }
 
-        TMultimediaTimer mmtimer;
 
         [DllImport("ch341dll.DLL",CallingConvention=CallingConvention.Winapi)]
         public extern static long CH341OpenDevice(int i);
@@ -62,7 +51,6 @@ namespace TestI2C
 
         byte[] WriteBuf = new byte[10];
         byte[] ReadBuf = new byte[10];
-        DataTable tablo = new DataTable();
 
         private Dictionary<string, byte[]> ScanAllAdresses()
         {
@@ -99,7 +87,8 @@ namespace TestI2C
             int bufLength = 1;
             int addresbyte = Convert.ToInt32(devAdress, 16) << 1;
             WriteBuf[0] = (Convert.ToByte(addresbyte ));
-            dataGridView1.Rows.Clear();
+            if (dataGridView1.Rows.Count < 256 || refreshDataGrid)
+                dataGridView1.Rows.Clear();
             for (int i = 0; i < 256; i++)
             {
                 WriteBuf[1] = Convert.ToByte(i);
@@ -119,8 +108,19 @@ namespace TestI2C
                 }
                 byte[] buf = new byte[bufLength];
                 CH341StreamI2C(0, 2, ref WriteBuf[0], bufLength, ref buf[0]);
-                string[] row = new string[] { i.ToString("X2"), regDefinition ,ByteArrayToString(buf) };
-                dataGridView1.Rows.Add(row);
+                var dataVal = ByteArrayToString(buf).Trim();
+                string[] row = new string[] { i.ToString("X2"), regDefinition, dataVal };
+                if (dataGridView1.Rows.Count < i + 1) 
+                    dataGridView1.Rows.Add(row);
+                else
+                {
+                    if ((string)dataVal != (string)dataGridView1.Rows[i].Cells[2].Value) 
+                        dataGridView1.Rows[i].Cells[2].Style.BackColor = Color.DarkSeaGreen;
+                    else
+                        dataGridView1.Rows[i].Cells[2].Style.BackColor = Color.White;
+                    dataGridView1.Rows[i].Cells[2].Value = dataVal;
+                }
+                    
                 result.Add(i.ToString("X2"), buf);
                 bufLength = 1;
             }
@@ -133,7 +133,7 @@ namespace TestI2C
             string sData = outData;
             byte[] buf = new byte[1];
             int addresbyte = Convert.ToInt32(devAdress, 16) << 1;
-            WriteBuf[0] = (Convert.ToByte(addresbyte + 1));
+            WriteBuf[0] = (Convert.ToByte(addresbyte));
             WriteBuf[1] = Convert.ToByte(regAdress, 16);
             sData= sData.Trim().Replace(" ","");
             for (int i = 0; i<sData.Length; i=i+2)
@@ -160,11 +160,19 @@ namespace TestI2C
                 if (i < 128)
                     cmbDeviceAdr.Items.Add(i.ToString("X2"));
             }
+            cmbDelay.DisplayMember = "Key";
+            cmbDelay.Items.Add(new KeyValuePair<string, int>("100 ms", 100));
+            cmbDelay.Items.Add(new KeyValuePair<string, int>("200 ms", 200));
+            cmbDelay.Items.Add(new KeyValuePair<string, int>("500 ms", 500));
+            cmbDelay.Items.Add(new KeyValuePair<string, int>("1 s", 1000));
+            cmbDelay.Items.Add(new KeyValuePair<string, int>("2 s", 2000));
+            cmbDelay.Items.Add(new KeyValuePair<string, int>("3 s", 3000));
+            cmbDelay.Items.Add(new KeyValuePair<string, int>("5 s", 5000));
             cmbDeviceAdr.SelectedIndex = 0;
             cmbReg.SelectedIndex = 0;
             cmbType.SelectedIndex = 0;
             cmbMode.SelectedIndex = 0;
-            cmbDelay.SelectedIndex = 0;
+            cmbDelay.SelectedIndex = 3;
  
         }
 
@@ -184,6 +192,7 @@ namespace TestI2C
         {
             cmbDelay.Visible = cmbMode.SelectedIndex == 1;
             lblDelay.Visible = cmbMode.SelectedIndex == 1;
+            timer1.Enabled = cmbMode.SelectedIndex == 1;
         }
         
         private void buttonOpen_Click(object sender, EventArgs e)
@@ -203,17 +212,6 @@ namespace TestI2C
 
         }
 
-         private void butStart1secTimer_Click(object sender, EventArgs e)
-        {
-            if (timer2.Enabled)
-                timer2.Enabled = false;
-            else
-            {
-                butInitTempADC_Click(null, null);
-                timer2.Enabled = true;
-            }
-        }
-
  
          private void buttonClose_Click(object sender, EventArgs e)
         {
@@ -223,7 +221,7 @@ namespace TestI2C
             btnScanAdresses.Enabled = false;
             groupBox3.Enabled = false;
             groupBox2.Enabled = false;
-            mmtimer.Disable();
+            timer1.Enabled=false;
             CH341CloseDevice(0);
 
         }
@@ -232,66 +230,6 @@ namespace TestI2C
         {
             txtData.Clear();
         }
-
-        private void timer2_Tick(object sender, EventArgs e)
-        {
-            byte[] LED = new byte[10];
-            LED[0] = Convert.ToByte( "3F",16); LED[1] = Convert.ToByte("06",16); LED[2] =Convert.ToByte("5B",16); 
-            LED[3] = Convert.ToByte("4F",16); LED[4] =Convert.ToByte("66",16);
-            LED[5] = Convert.ToByte("6D",16); LED[6] = Convert.ToByte("7D",16); LED[7] = Convert.ToByte("07",16); 
-            LED[8] = Convert.ToByte("7F",16); LED[9] = Convert.ToByte("6F",16);
-            byte[] LEDp = new byte[10];
-            LEDp[0] = Convert.ToByte("BF",16); LEDp[1] = Convert.ToByte("86",16); LEDp[2] = Convert.ToByte("DB",16); 
-            LEDp[3] = Convert.ToByte("CF",16); LEDp[4] = Convert.ToByte("E6",16);
-            LEDp[5] = Convert.ToByte("ED", 16); LEDp[6] = Convert.ToByte("FD", 16); LEDp[7] = Convert.ToByte("87", 16); 
-            LEDp[8] = Convert.ToByte("FF",16); LEDp[9] = Convert.ToByte("EF",16);
- 
-
-            // read Temp. - Sensor
-            WriteBuf[0] = Convert.ToByte("91", 16);
-            WriteBuf[1] = Convert.ToByte("02", 16);
-            CH341StreamI2C(0, 2, ref WriteBuf[0], 2, ref ReadBuf[0]);
-            
-            sbyte high = (sbyte)ReadBuf[0];
-            short low = ReadBuf[1];
-            //labTemp.Text = (high + low / 256.0).ToString("f2") + "°";
-
-            
-            // Read ADC
-            
-
-            //textBox2.Text = label9.Text;  // read ADC
-            WriteBuf[0] = Convert.ToByte("93", 16);
-            WriteBuf[1] = Convert.ToByte("02", 16);
-            CH341StreamI2C(0, 2, ref WriteBuf[0], 2, ref ReadBuf[0]);
-            textBox1.Clear();
-            textBox1.Text = ReadBuf[0].ToString("x2") + " " + ReadBuf[1].ToString("x2");
-            high = (sbyte)ReadBuf[0];
-            mvolt = high * 32 + ReadBuf[1] / 32;
-            //int mVoutcorr = mvolt * 4095 / (int)numericUpDown3.Value;
-            //labADCOut.Text = mvolt.ToString("f3") + " V";
-
-            // Write to 4 * 7 Seg ELV- Display
-            int mvt = mvolt / 1000;
-            int rest = mvolt - mvt * 1000;
-            int mvh = rest / 100;
-            rest=rest -mvh * 100;
-            int mvz = rest / 10;
-            int mve = rest - mvz * 10;
-            WriteBuf[0] = Convert.ToByte("70", 16);
-            WriteBuf[1] = Convert.ToByte("00", 16);
-            WriteBuf[2] = Convert.ToByte("17", 16);
-            WriteBuf[3] = LEDp[mvt];
-            WriteBuf[4] = LED[mvh];
-            WriteBuf[5] = LED[mvz];
-            WriteBuf[6] = LED[mve];
-            CH341StreamI2C(0, 7, ref WriteBuf[0], 0, ref ReadBuf[0]);
-
-        }
-
-        int mvolt = 0;
-
-
 
         private void tempLbl_Click(object sender, EventArgs e)
         {
@@ -308,148 +246,28 @@ namespace TestI2C
                     case "Type": cmbType.Text = lblDatalParts[1]; break;
                 }
             }
-            //cmbReg.SelectedIndex=10;
-
-            /*
-            textBox2.Text = label3.Text;  // Ausgabe "1234" auf 4 * 7 Seg
-            WriteBuf[0] = Convert.ToByte("70", 16);
-            WriteBuf[1] = Convert.ToByte("00", 16);
-            WriteBuf[2] = Convert.ToByte("17", 16);
-            WriteBuf[3] = Convert.ToByte("06", 16);
-            WriteBuf[4] = Convert.ToByte("5b", 16);
-            WriteBuf[5] = Convert.ToByte("4f", 16);
-            WriteBuf[6] = Convert.ToByte("66", 16);
-            CH341StreamI2C(0, 7, ref WriteBuf[0], 0, ref ReadBuf[0]);*/
-
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-            textBox2.Text = label4.Text;  // Init Temp.- Sensor
-            WriteBuf[0] = Convert.ToByte("90", 16);
-            WriteBuf[1] = Convert.ToByte("01", 16);
-            WriteBuf[2] = Convert.ToByte("60", 16);
-            CH341StreamI2C(0, 3, ref WriteBuf[0], 0, ref ReadBuf[0]);
-
-        }
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-            textBox2.Text = label5.Text;  // Temp auf Conversion
-            WriteBuf[0] = Convert.ToByte("90", 16);
-            WriteBuf[1] = Convert.ToByte("00", 16);
-            CH341StreamI2C(0, 2, ref WriteBuf[0], 0, ref ReadBuf[0]);
-        }
-
-        private void label6_Click(object sender, EventArgs e)
-        {
-            textBox2.Text = label6.Text;  // Read Temp
-            WriteBuf[0] = Convert.ToByte("91", 16);
-            WriteBuf[1] = Convert.ToByte("02", 16);
-            CH341StreamI2C(0, 2, ref WriteBuf[0], 2, ref ReadBuf[0]);
-            textBox1.Clear();
-            textBox1.Text = ReadBuf[0].ToString("x2") + " " + ReadBuf[1].ToString("x2") ;
-            sbyte high = (sbyte)ReadBuf[0];
-            short low = ReadBuf[1];
-            //labTemp.Text = (high + low / 256.0).ToString("f2") + "°";
-
         }
 
         bool sw = true;
         private XElement deviceInfo;
-
-        void mmtimerTick(TMultimediaTimer sender)
-        {
-            // Sample and Hold first read ADC, than output on DAC
-
-            // Rectangle to  DAC
-
-            if (0==1)
-            {
-                if (sw)
-                {
-                    WriteBuf[0] = 196;
-                    WriteBuf[1] = 0;
-                    WriteBuf[2] = 0;
-                    CH341StreamI2C(0, 3, ref WriteBuf[0], 0, ref ReadBuf[0]);
-
-                    sw = false;
-                }
-                else
-                {
-                    WriteBuf[0] = 196;
-                    WriteBuf[1] = 15;
-                    WriteBuf[2] = 255;
-                    CH341StreamI2C(0, 3, ref WriteBuf[0], 0, ref ReadBuf[0]);
-
-                    sw = true;
-                }
-            }
-            else   // Sample & Hold
-            {
-                WriteBuf[0] = Convert.ToByte("93", 16);
-                WriteBuf[1] = Convert.ToByte("02", 16);
-                CH341StreamI2C(0, 2, ref WriteBuf[0], 2, ref ReadBuf[0]);
-                byte high = (byte)ReadBuf[0];
-                mvolt = high * 32 + ReadBuf[1] / 32;  // Gesampelter ADC- Wert
-                int mVoutcorr = mvolt * 4095 / 1;// (int)numericUpDown3.Value;  //Auf 5 V - DAC korrigierter Wert
-                WriteBuf[0] = Convert.ToByte("C4", 16);
-                byte highout=Convert.ToByte( mVoutcorr / 256);
-                WriteBuf[1] =highout; 
-                WriteBuf[2] =Convert.ToByte (mVoutcorr-highout*256) ;
-                CH341StreamI2C(0, 3, ref WriteBuf[0], 0, ref ReadBuf[0]);
- 
-
-            }
-           
-            
-        }
-
-        private void butStartMM_Click(object sender, EventArgs e)
-        {
-            if (mmtimer.Enabled)
-            {
-                mmtimer.Enabled = false;
-                //butStartMM.Text = "Start again";
-            }
-
-            else
-            {
-                mmtimer.Enabled = true;
-                //butStartMM.Text = "Stop MMTimer";
-            }
-
-        }
-
-        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
-        {
-            mmtimer.Disable();
-            //mmtimer.Interval = (uint)numericUpDown1.Value;
-            mmtimer.Enable();
-        }
-
-        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
-        {
-            int mVOut = 0;//(int)numericUpDown2.Value;
-            int mVoutcorr = mVOut * 4095 / 1;// (int)numericUpDown3.Value;
-            textBox2.Text = "S C4 " + mVoutcorr.ToString("x4");
-            
-            // Write to DAC
-            WriteBuf[0] = Convert.ToByte("C4", 16);
-            byte highout = Convert.ToByte(mVoutcorr / 256);
-            WriteBuf[1] = highout;
-            WriteBuf[2] = Convert.ToByte(mVoutcorr - highout * 256);
-            CH341StreamI2C(0, 3, ref WriteBuf[0], 0, ref ReadBuf[0]);
-        }
+        private int currentMode = 0;
+        private string currentType="Hex";
+        private string selectedAdress = "00";
+        private bool refreshDataGrid;
 
         private void butInitTempADC_Click(object sender, EventArgs e)
         {
             ReadAllRegister(cmbDeviceAdr.Text);
-            dataGridView1.Columns[0].HeaderText = "Register";
-            dataGridView1.Columns[1].Visible = true;
-            dataGridView1.Columns[3].Visible = true;
-            dataGridView1.Columns[4].Visible = true;
-            dataGridView1.Columns[5].Visible = true;
+            if (currentMode == 1)
+            {
+                dataGridView1.Columns[0].HeaderText = "Register";
+                dataGridView1.Columns[1].Visible = true;
+                dataGridView1.Columns[3].Visible = true;
+                dataGridView1.Columns[4].Visible = true;
+                dataGridView1.Columns[5].Visible = true;
+                currentMode= 0;
+            }
+
         }
 
         private void rB20k_CheckedChanged(object sender, EventArgs e)
@@ -462,23 +280,27 @@ namespace TestI2C
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            currentType = cmbType.Text;
         }
 
         private void btnScanAdresses_Click(object sender, EventArgs e)
         {
             var listAdresses=ScanAllAdresses();
-            dataGridView1.Columns[0].HeaderText= "Adresses";
-            dataGridView1.Columns[1].Visible = false;
-            dataGridView1.Columns[3].Visible = false;
-            dataGridView1.Columns[4].Visible = false;
-            dataGridView1.Columns[5].Visible = false;
+            if (currentMode == 0)
+            {
+                dataGridView1.Columns[0].HeaderText = "Adresses";
+                dataGridView1.Columns[1].Visible = false;
+                dataGridView1.Columns[3].Visible = false;
+                dataGridView1.Columns[4].Visible = false;
+                dataGridView1.Columns[5].Visible = false;
+                currentMode= 1;
+            }
+
             foreach (var item in listAdresses)
             {
                 string[] row = new string[] { item.Key, "", ByteArrayToString(item.Value) };
                 dataGridView1.Rows.Add(row);
             }
-
         }
 
         private void cmdReadRegister_Click(object sender, EventArgs e)
@@ -516,6 +338,7 @@ namespace TestI2C
 
         private void cmbDevices_SelectedIndexChanged(object sender, EventArgs e)
         {
+            refreshDataGrid = true;
             if (cmbDevices.SelectedIndex > 0)
             {
 
@@ -566,6 +389,29 @@ namespace TestI2C
 
             } else
                 deviceInfo= null;
+        }
+
+        private void cmbDelay_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbDelay.SelectedIndex > -1)
+            {
+                timer1.Interval = ((KeyValuePair<string, int>)cmbDelay.SelectedItem).Value;
+            }
+        }
+
+        private void cmbDeviceAdr_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            selectedAdress = cmbDeviceAdr.Text;
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            butInitTempADC_Click(sender, e);
+        }
+
+        private void cmdSend_Click(object sender, EventArgs e)
+        {
+            writeRegister(cmbDeviceAdr.Text, cmbReg.Text, txtData.Text);
         }
     }
 }
