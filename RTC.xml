@@ -94,13 +94,8 @@
 			</Register>
 			<Register>
 				<RegAdress>11</RegAdress>
-				<Length>1</Length>
-				<Definition>Bits: SIGN DATA DATA DATA DATA DATA DATA DATA Function: MSB of Temp</Definition>
-			</Register>
-			<Register>
-				<RegAdress>12</RegAdress>
-				<Length>1</Length>
-				<Definition>Bits: DATA DATA 0 0 0 0 0 0 Function: LSB of Temp</Definition>
+				<Length>2</Length>
+				<Definition>Temp (Result: Temp/256)</Definition>
 			</Register>
 		</Registers>
     <Commands>

@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TestI2C
 {
@@ -50,7 +51,6 @@ namespace TestI2C
         public extern static long CH341SetStream(int iIndex, int iMode);
 
         byte[] WriteBuf = new byte[10];
-        byte[] ReadBuf = new byte[10];
 
         private Dictionary<string, byte[]> ScanAllAdresses()
         {
@@ -89,6 +89,7 @@ namespace TestI2C
             WriteBuf[0] = (Convert.ToByte(addresbyte ));
             if (dataGridView1.Rows.Count < 256 || refreshDataGrid)
                 dataGridView1.Rows.Clear();
+            refreshDataGrid= false;
             for (int i = 0; i < 256; i++)
             {
                 WriteBuf[1] = Convert.ToByte(i);
@@ -109,7 +110,8 @@ namespace TestI2C
                 byte[] buf = new byte[bufLength];
                 CH341StreamI2C(0, 2, ref WriteBuf[0], bufLength, ref buf[0]);
                 var dataVal = ByteArrayToString(buf).Trim();
-                string[] row = new string[] { i.ToString("X2"), regDefinition, dataVal };
+                string[] row = new string[] { i.ToString("X2"), regDefinition, dataVal, ByteArrayToAsciiString(buf).Trim(), ByteArrayToDecimalString(buf).Trim(), ByteArrayToBinaryString(buf).Trim() };
+            
                 if (dataGridView1.Rows.Count < i + 1) 
                     dataGridView1.Rows.Add(row);
                 else
@@ -119,6 +121,10 @@ namespace TestI2C
                     else
                         dataGridView1.Rows[i].Cells[2].Style.BackColor = Color.White;
                     dataGridView1.Rows[i].Cells[2].Value = dataVal;
+                    dataGridView1.Rows[i].Cells[3].Value = ByteArrayToAsciiString(buf).Trim();
+                    dataGridView1.Rows[i].Cells[4].Value = ByteArrayToDecimalString(buf).Trim();
+                    dataGridView1.Rows[i].Cells[5].Value = ByteArrayToBinaryString(buf).Trim();
+
                 }
                     
                 result.Add(i.ToString("X2"), buf);
@@ -127,21 +133,31 @@ namespace TestI2C
             return result;
         }
 
-        private void writeRegister(string devAdress, string regAdress, string outData)
+        private void writeRegister(string devAdress, string regAdress, string outData, string sType)
         {
             int bufLength = 0;
             string sData = outData;
+            switch (sType)
+            {
+                case "Ascii": sData = outData.ToCharArray().Aggregate("", (a, b) => a + ((byte)b).ToString("X") + " ").ToUpper().Trim(); break;
+                case "Dec": sData = int.Parse(outData).ToString("X2"); break;
+                case "Bin": sData= string.Join(" ", Enumerable.Range(0, outData.Trim().Replace(" ", "").Length / 8)
+                                            .Select(i => Convert.ToByte(outData.Trim().Replace(" ", "").Substring(i * 8, 8), 2).ToString("X2"))); break;
+            }
+            
+                
             byte[] buf = new byte[1];
             int addresbyte = Convert.ToInt32(devAdress, 16) << 1;
             WriteBuf[0] = (Convert.ToByte(addresbyte));
             WriteBuf[1] = Convert.ToByte(regAdress, 16);
             sData= sData.Trim().Replace(" ","");
-            for (int i = 0; i<sData.Length; i=i+2)
+            for (int i = 0; i<sData.Length; i+=2)
             {
                 WriteBuf[(i/2)+2] = Convert.ToByte(sData.Substring(i,2), 16);
                 bufLength++;
             }
             CH341StreamI2C(0, bufLength + 2, ref WriteBuf[0], bufLength, ref buf[0]);
+            //Console.WriteLine(sData);
         }
 
         public static string ByteArrayToString(byte[] ba)
@@ -150,6 +166,38 @@ namespace TestI2C
             foreach (byte b in ba)
                 hex.AppendFormat("{0:X2} ", b);
             return hex.ToString();
+        }
+
+        public static string ByteArrayToDecimalString(byte[] ba)
+        {
+            StringBuilder hex = new StringBuilder(ba.Length * 2);
+            foreach (byte b in ba)
+                hex.AppendFormat("{0:X2}", b);
+            // ds3231 temp calculation
+            //var result = (Convert.ToInt32(hex.ToString(), 16) & 0x7FC0) >> 6;  
+            //var minus = Convert.ToInt32(hex.ToString(), 16) >> 15;
+            //if (minus == 1)
+            //    result = result * -1;
+            //return (result / 4.00).ToString("F");
+            return Convert.ToInt32(hex.ToString(), 16).ToString(); 
+        }
+
+        public static string ByteArrayToAsciiString(byte[] ba)
+        {
+            // Old Method
+            //StringBuilder hex = new StringBuilder(ba.Length * 2);
+            //foreach (byte b in ba)
+            //    hex.AppendFormat("{0}", (char)b);
+
+            return System.Text.Encoding.ASCII.GetString(ba);// hex.ToString();
+        }
+
+        public static string ByteArrayToBinaryString(byte[] ba)
+        {
+            StringBuilder hex = new StringBuilder(ba.Length * 2);
+            foreach (byte b in ba)
+                hex.AppendFormat("{0} ", Convert.ToString(b, 2).PadLeft(8, '0'));
+            return hex.ToString(); 
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -242,17 +290,15 @@ namespace TestI2C
                 {
                     case "Reg": cmbReg.Text = lblDatalParts[1];break;
                     case "Length": numericUpDown1.Value = Convert.ToDecimal(lblDatalParts[1]); break;
-                    case "Data": txtData.Text = lblDatalParts[1]; break;
+                    case "Data": txtDataRawHex.Text = lblDatalParts[1]; break;
                     case "Type": cmbType.Text = lblDatalParts[1]; break;
                 }
             }
         }
 
-        bool sw = true;
         private XElement deviceInfo;
         private int currentMode = 0;
         private string currentType="Hex";
-        private string selectedAdress = "00";
         private bool refreshDataGrid;
 
         private void butInitTempADC_Click(object sender, EventArgs e)
@@ -281,6 +327,7 @@ namespace TestI2C
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             currentType = cmbType.Text;
+            txtDataRawHex_TextChanged(sender, e);
         }
 
         private void btnScanAdresses_Click(object sender, EventArgs e)
@@ -305,7 +352,7 @@ namespace TestI2C
 
         private void cmdReadRegister_Click(object sender, EventArgs e)
         {
-            txtData.Text = ByteArrayToString(ReadOneRegister(cmbDeviceAdr.Text, cmbReg.Text, (int)numericUpDown1.Value));
+            txtDataRawHex.Text = ByteArrayToString(ReadOneRegister(cmbDeviceAdr.Text, cmbReg.Text, (int)numericUpDown1.Value));
             //writeRegister(cmbDeviceAdr.Text, cmbReg.Text, txtData.Text);
         }
 
@@ -399,11 +446,6 @@ namespace TestI2C
             }
         }
 
-        private void cmbDeviceAdr_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            selectedAdress = cmbDeviceAdr.Text;
-        }
-
         private void timer1_Tick(object sender, EventArgs e)
         {
             butInitTempADC_Click(sender, e);
@@ -411,7 +453,46 @@ namespace TestI2C
 
         private void cmdSend_Click(object sender, EventArgs e)
         {
-            writeRegister(cmbDeviceAdr.Text, cmbReg.Text, txtData.Text);
+            //TODO: convert data to hex before send!!
+            writeRegister(cmbDeviceAdr.Text, cmbReg.Text, txtData.Text, currentType);
+        }
+
+        private void dataGridView1_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.RowIndex != -1)
+            {
+                cmbReg.Text = dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString().Trim();
+                if (deviceInfo != null)
+                {
+                    XElement registersList = deviceInfo.Element("Registers");
+                    var nameByValue = registersList.Descendants("Register")
+                                                .Where(elem => elem.Element("RegAdress").Value.Equals(dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString().Trim()));
+                    if (nameByValue.Count() > 0)
+                    {
+                        numericUpDown1.Value = Convert.ToInt16(nameByValue.FirstOrDefault().Element("Length").Value);
+                    }
+                }
+                txtDataRawHex.Text = ByteArrayToString(ReadOneRegister(cmbDeviceAdr.Text, cmbReg.Text, (int)numericUpDown1.Value));
+            }
+        }
+
+        private void txtDataRawHex_TextChanged(object sender, EventArgs e)
+        {
+            if (cmbType.SelectedIndex != -1 )
+            {
+                var rawData = txtDataRawHex.Text.Trim().Replace(" ", "");
+                var ba = Enumerable.Range(0, rawData.Length)
+                     .Where(x => x % 2 == 0)
+                     .Select(x => Convert.ToByte(rawData.Substring(x, 2), 16))
+                     .ToArray();
+                switch (cmbType.SelectedIndex)
+                {
+                    case 0:txtData.Text= txtDataRawHex.Text; break;
+                    case 1: txtData.Text = ByteArrayToAsciiString(ba); break;
+                    case 2: txtData.Text = ByteArrayToDecimalString(ba); break;
+                    case 3: txtData.Text = ByteArrayToBinaryString(ba); break;
+                }
+            }
         }
     }
 }

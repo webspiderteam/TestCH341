@@ -75,6 +75,7 @@
             this.buttonClear = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.txtDataRawHex = new System.Windows.Forms.TextBox();
             this.statusStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -340,6 +341,7 @@
             this.dataGridView1.RowHeadersWidth = 30;
             this.dataGridView1.Size = new System.Drawing.Size(712, 266);
             this.dataGridView1.TabIndex = 0;
+            this.dataGridView1.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseDoubleClick);
             // 
             // Register
             // 
@@ -379,6 +381,7 @@
             // groupBox3
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.txtDataRawHex);
             this.groupBox3.Controls.Add(this.panel1);
             this.groupBox3.Controls.Add(this.cmdReadRegister);
             this.groupBox3.Controls.Add(this.lblDelay);
@@ -428,7 +431,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(76, 60);
+            this.label11.Location = new System.Drawing.Point(73, 55);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(40, 13);
             this.label11.TabIndex = 48;
@@ -458,7 +461,6 @@
             this.cmbDeviceAdr.Name = "cmbDeviceAdr";
             this.cmbDeviceAdr.Size = new System.Drawing.Size(54, 21);
             this.cmbDeviceAdr.TabIndex = 46;
-            this.cmbDeviceAdr.SelectedIndexChanged += new System.EventHandler(this.cmbDeviceAdr_SelectedIndexChanged);
             // 
             // label9
             // 
@@ -564,6 +566,15 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // txtDataRawHex
+            // 
+            this.txtDataRawHex.Location = new System.Drawing.Point(163, 52);
+            this.txtDataRawHex.Name = "txtDataRawHex";
+            this.txtDataRawHex.Size = new System.Drawing.Size(121, 20);
+            this.txtDataRawHex.TabIndex = 51;
+            this.txtDataRawHex.Visible = false;
+            this.txtDataRawHex.TextChanged += new System.EventHandler(this.txtDataRawHex_TextChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -638,6 +649,7 @@
         private System.Windows.Forms.Button btnLoadXml;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.TextBox txtDataRawHex;
     }
 }
 
