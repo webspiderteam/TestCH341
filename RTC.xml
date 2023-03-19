@@ -95,7 +95,7 @@
 			<Register>
 				<RegAdress>11</RegAdress>
 				<Length>2</Length>
-				<Definition>Temp (Result: Temp/256)</Definition>
+				<Definition>Temp (Result: Temp/256 Note: First bit is negative sign)</Definition>
 			</Register>
 		</Registers>
     <Commands>
@@ -209,16 +209,11 @@
 				<Length>1</Length>
 				<Definition>Bits: SIGN DATA DATA DATA DATA DATA DATA DATA Function: Aging Offset</Definition>
 			</Register>
-			<Register>
-				<RegAdress>11</RegAdress>
-				<Length>1</Length>
-				<Definition>Bits: SIGN DATA DATA DATA DATA DATA DATA DATA Function: MSB of Temp</Definition>
-			</Register>
-			<Register>
-				<RegAdress>12</RegAdress>
-				<Length>1</Length>
-				<Definition>Bits: DATA DATA 0 0 0 0 0 0 Function: LSB of Temp</Definition>
-			</Register>
+      <Register>
+        <RegAdress>11</RegAdress>
+        <Length>2</Length>
+        <Definition>Temp (Result: Temp/256 Note: First bit is negative sign)</Definition>
+      </Register>
 		</Registers>
     <Commands>
       <Command>

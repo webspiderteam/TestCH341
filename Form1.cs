@@ -8,7 +8,6 @@ using System.Windows.Forms;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace TestI2C
 {
