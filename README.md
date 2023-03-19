@@ -4,4 +4,4 @@ This project is for testing Usb CH341 IC/Programmer/Board's communucation over I
 Note: Do not Remove RTC.xml directly. It's imported to poject. It can couse build errors.
 
 #Screenshots
-![image](https://user-images.githubusercontent.com/85828505/224505545-c3852eab-959b-4ec5-98b9-946b6a86fe0f.png)
+![image](https://user-images.githubusercontent.com/85828505/226177934-4f918ea1-0054-4fa5-b850-b2e02657ea67.png)
